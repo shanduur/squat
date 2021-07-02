@@ -1,0 +1,30 @@
+<h1>Data Generator</h1>
+<textarea id="template" hidden>{{ .Template }}</textarea>
+<form>
+  <input type="radio" checked hidden name="source" value="{{ .Source }}">
+  <input type="radio" checked hidden name="source-table" value="{{ .Table }}">
+  <table>
+    <thead>
+      <tr>
+        <td><b>Include</b></td>
+        <td><b>Name</b></td>
+        <td><b>Type</b></td>
+        <td><b>Unique</b></td>
+        <td><b>Data</b></td>
+        <td><b>Custom</b></td>
+        <td><b>REGEX</b></td>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      {{ .Rows }}
+    </tbody>
+  </table>
+  <input type="text" id="newColName" value="NEW_COLUMN">
+  <input type="text" id="newColType" value="INTEGER">
+  <button onclick="addRow()" type="button">
+    Add Row
+  </button><br />
+  <button type="submit" formaction="/api/v1/generate" target="_blank">
+    Generate
+  </button><br />
+</form>

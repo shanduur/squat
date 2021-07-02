@@ -1,0 +1,25 @@
+<h1>Data Generator</h1>
+<form>
+  <table>
+    <tbody>
+      <tr>
+        <td>Table Name</td>
+        <td><input type="text" id="table" name="table"></td>
+      </tr>
+      <tr>
+        <td>Source Database</td>
+        <td>
+{{ .Sources }}
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <button formaction="/table">
+            Get Table
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>

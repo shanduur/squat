@@ -1,0 +1,13 @@
+<tr>
+  <td><input type="checkbox" name="include1" checked=true></td>
+  <td><input type="text" name="name-{{ .Name }}" value="{{ .Name }}" disabled></td>
+  <td><input type="text" name="type-{{ .Name }}" value="{{ .Type }}" disabled></td>
+  <td><input type="checkbox" name="unique-{{ .Name }}"></td>
+  <td>
+    <select name="regex-{{ .Name }}">
+      {{ .Options }}
+    </select>
+  </td>
+  <td><input type="checkbox" name="custom-{{ .Name }}"></td>
+  <td><input type="text" name="regex-{{ .Name }}"></td>
+</tr>

@@ -1,0 +1,2 @@
+provider-name = "Informix"
+odbc-data-source = "IFX-Source_GO"
