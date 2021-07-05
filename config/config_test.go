@@ -7,8 +7,8 @@ import (
 )
 
 type testCfg struct {
-	Name   string `toml:"name"`
-	Number int    `toml:"number"`
+	Name   string `toml:"name" env:"NAME"`
+	Number int    `toml:"number" env:"NUMBER"`
 }
 
 var (

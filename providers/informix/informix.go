@@ -11,8 +11,9 @@ import (
 )
 
 type ifxConfig struct {
-	ProviderName   string `toml:"provider-name"`
-	DataSourceName string `toml:"odbc-data-source"`
+	ProviderName   string            `toml:"provider-name"`
+	DataSourceName string            `toml:"odbc-data-source"`
+	Formats        providers.Formats `toml:"formats"`
 }
 
 //go:embed describe.sql
@@ -68,8 +69,16 @@ func (ifx IfxProvider) GetTableDescription(name string) (dsc []providers.Describ
 	return
 }
 
-func (ifx IfxProvider) GetProviderName() string {
+func (ifx IfxProvider) ProviderName() string {
 	return ifx.cfg.ProviderName
+}
+
+func (ifx IfxProvider) DateFormat() string {
+	return ifx.cfg.Formats.DateFormat
+}
+
+func (ifx IfxProvider) DateTimeFormat() string {
+	return ifx.cfg.Formats.DateTimeFormat
 }
 
 func connect(ifx IfxProvider) (conn *sql.DB, err error) {

@@ -10,7 +10,15 @@ type Describe struct {
 	Nullable        sql.NullBool
 }
 
+type Formats struct {
+	DateFormat      string `toml:"date"`
+	DateTimeFormat  string `toml:"datetime"`
+	TimestampFormat string `toml:"timestamp"`
+}
+
 type Provider interface {
-	GetProviderName() string
+	ProviderName() string
 	GetTableDescription(string) ([]Describe, error)
+	DateFormat() string
+	DateTimeFormat() string
 }

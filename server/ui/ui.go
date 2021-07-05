@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -57,6 +59,7 @@ func handleIndex(w http.ResponseWriter, req *http.Request) {
 }
 
 func handleTable(w http.ResponseWriter, req *http.Request) {
+	req.ParseForm()
 	src := req.FormValue("source")
 	tab := req.FormValue("table")
 
@@ -67,17 +70,27 @@ func handleTable(w http.ResponseWriter, req *http.Request) {
 			log.Printf("unable to get table description: %s", err.Error())
 		}
 
-		w.Write([]byte(buildTables(src, tab, dsc)))
+		out, err := buildTables(src, tab, dsc)
+		if err != nil {
+			log.Printf("unable to build tables: %s", err.Error())
+			return
+		}
+		w.Write([]byte(out))
 	}
 }
 
-func buildTables(src string, tab string, dsc []providers.Describe) string {
+func buildTables(src string, tab string, dsc []providers.Describe) (string, error) {
 	output := strings.ReplaceAll(mainHTML, template["head"], headHTML)
 	output = strings.ReplaceAll(output, template["body"], bodyTableHTML)
 	output = strings.ReplaceAll(output, template["script"], scriptTableJS)
 
 	var options string
-	for k, v := range generator.TagsRegex {
+	g, err := generator.New(path.Join(os.Getenv("DATA_LOCATION"), "data.gob"))
+	if err != nil {
+		return "", fmt.Errorf("unable to load generator")
+	}
+
+	for k, v := range g.TagsAndRegex {
 		opt := strings.ReplaceAll(partialOptionHTML, template["name"], fmt.Sprint(v))
 		opt = strings.ReplaceAll(opt, template["display"], k)
 		options = fmt.Sprintf("%s\n%s", options, opt)
@@ -129,7 +142,7 @@ func buildTables(src string, tab string, dsc []providers.Describe) string {
 	output = strings.ReplaceAll(output, template["source"], src)
 	output = strings.ReplaceAll(output, template["table"], tab)
 
-	return output
+	return output, nil
 }
 
 func buildIndex() string {
