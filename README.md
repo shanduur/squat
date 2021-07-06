@@ -2,9 +2,9 @@
   <img src="other/squat.png"/>
 </p>
 
-[![license](https://img.shields.io/github/license/shanduur/squat)](LICENSE)
-![go version](https://img.shields.io/github/go-mod/go-version/shanduur/squat)
-[![Go Report Card](https://goreportcard.com/badge/github.com/shanduur/squat)](https://goreportcard.com/report/github.com/shanduur/squat)
+[![license](https://img.shields.io/github/license/shanduur/squat?)](LICENSE)
+![go version](https://img.shields.io/github/go-mod/go-version/shanduur/squat?)
+[![Go Report Card](https://goreportcard.com/badge/github.com/shanduur/squat?)](https://goreportcard.com/report/github.com/shanduur/squat)
 
 # Squat
 
