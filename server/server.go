@@ -22,7 +22,7 @@ type WebServer struct {
 	shutdown chan bool
 }
 
-// New function creates new WebServer on given addres.
+// New function creates new WebServer on given address.
 func New(addr string) *WebServer {
 	r := mux.NewRouter()
 

@@ -17,7 +17,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "squat",
 	Short: "squat is the main command, used to start application server.",
-	Long: `Squat is an aplication that provides simple SQL data generation functionality. 
+	Long: `Squat is an application that provides simple SQL data generation functionality. 
 
 It generates synthetic SQL data based on the table definition, that is gathered from the DBMS. 
 Squat supports IBM Informix, with planned support for PostgreSQL, MySQL, CockroachDB and MariaDB.`,
@@ -42,7 +42,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringVarP(&port, "port", "p", ":8080", "port on which REST API listenes")
+	rootCmd.Flags().StringVarP(&port, "port", "p", ":8080", "port on which REST API listens")
 	showEnv = rootCmd.Flags().Bool("get-env", false, "if used, displays additional information about environmental variables on startup")
 }
 
