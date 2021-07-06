@@ -1,7 +1,9 @@
+/*
+Package frontend implements handlers for front-end, and Register function for adding them to mux.Router.
+*/
 package frontend
 
 import (
-	_ "embed"
 	"fmt"
 	"net/http"
 

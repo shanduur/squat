@@ -1,3 +1,8 @@
+/*
+Package generator implements generator, that is able to create Insert Query,
+as well as load dictionary from the gob file. It wraps reggen package for creating
+synthetic data directly from Regular Expressions.
+*/
 package generator
 
 import (
@@ -148,7 +153,7 @@ type Column struct {
 }
 
 // Query builds insert query based on the table description.
-func (gen Generator) Query(table string, dsc map[string]Column) (string, error) {
+func (g Generator) Query(table string, dsc map[string]Column) (string, error) {
 	query := "INSERT INTO %s (%s) \nVALUES (%s);"
 
 	columns := make(map[int]string)
@@ -163,7 +168,7 @@ func (gen Generator) Query(table string, dsc map[string]Column) (string, error) 
 		columns[v.Order] = k
 
 		if strings.Contains(v.TagRegex, "@") {
-			s, err := gen.Get(v.TagRegex)
+			s, err := g.Get(v.TagRegex)
 			if err != nil {
 				return "", fmt.Errorf("unable to obtain value %s: %s", v.TagRegex, err.Error())
 			}
@@ -172,7 +177,7 @@ func (gen Generator) Query(table string, dsc map[string]Column) (string, error) 
 			continue
 		}
 
-		s, err := gen.Generate(v.TagRegex, v.Length, v.Type)
+		s, err := g.Generate(v.TagRegex, v.Length, v.Type)
 		if err != nil {
 			return "", fmt.Errorf("unable to generate from %s and length %d: %s", v.TagRegex, v.Length, err.Error())
 		}

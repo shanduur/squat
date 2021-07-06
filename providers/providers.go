@@ -1,3 +1,6 @@
+/*
+Package providers holds Errors, Structs and Interfaces that should be used by every provider.
+*/
 package providers
 
 import (

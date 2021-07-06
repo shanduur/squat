@@ -10,6 +10,7 @@ import (
 	"os"
 )
 
+// ErrNotInDict indicates that value, which was requested, is not in the dictionary.
 var ErrNotInDict = errors.New("tag not found in dictionary")
 
 // Constant defining default values supported for the generation of the data.

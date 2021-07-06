@@ -1,6 +1,11 @@
+/*
+Package website holds strings with template contents and exports all functions
+necessary to build the website contents.
+*/
 package website
 
 import (
+	// embed is used hre for including templates into the binary
 	_ "embed"
 	"fmt"
 	"log"

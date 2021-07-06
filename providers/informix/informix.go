@@ -1,10 +1,15 @@
+/*
+Package informix includes implementation of the Provider interface.
+*/
 package informix
 
 import (
 	"database/sql"
+	// embed is used here for including describe.sql file during compilation.
 	_ "embed"
 	"fmt"
 
+	// driver for the SQL
 	_ "github.com/alexbrainman/odbc"
 	"github.com/shanduur/squat/config"
 	"github.com/shanduur/squat/providers"
@@ -19,10 +24,12 @@ type ifxConfig struct {
 //go:embed describe.sql
 var describeQuery string
 
+// IfxProvider struct is the structure implementing Provider interface
 type IfxProvider struct {
 	cfg ifxConfig
 }
 
+// New creates new Informix Provider
 func New(configPath string) (IfxProvider, error) {
 	var ifx IfxProvider
 
@@ -45,6 +52,8 @@ func (ifx *IfxProvider) Initialize(configPath string) (err error) {
 	return nil
 }
 
+// GetTableDescription retrieves basic table description from database.
+// Using describe.sql it retrieves info about every column of table.
 func (ifx IfxProvider) GetTableDescription(name string) (dsc []providers.Describe, err error) {
 	conn, err := connect(ifx)
 	if err != nil {
@@ -75,14 +84,17 @@ func (ifx IfxProvider) GetTableDescription(name string) (dsc []providers.Describ
 	return
 }
 
+// ProviderName is interface function.
 func (ifx IfxProvider) ProviderName() string {
 	return ifx.cfg.ProviderName
 }
 
+// DateFormat is interface function.
 func (ifx IfxProvider) DateFormat() string {
 	return ifx.cfg.Formats.DateFormat
 }
 
+// DateTimeFormat is interface function.
 func (ifx IfxProvider) DateTimeFormat() string {
 	return ifx.cfg.Formats.DateTimeFormat
 }

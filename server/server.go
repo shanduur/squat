@@ -1,3 +1,6 @@
+/*
+Package server holds the main server implementation. All other code is run from here.
+*/
 package server
 
 import (
@@ -13,6 +16,7 @@ import (
 	"github.com/shanduur/squat/server/frontend"
 )
 
+// WebServer is the structure holding http.server as well as some necessary fields.
 type WebServer struct {
 	Server   *http.Server
 	shutdown chan bool
@@ -22,9 +26,9 @@ type WebServer struct {
 func New(addr string) *WebServer {
 	r := mux.NewRouter()
 
-	rApi := r.PathPrefix("/api/v1").Subrouter()
+	rAPI := r.PathPrefix("/api/v1").Subrouter()
 
-	api.RegisterEndpoints(rApi)
+	api.RegisterEndpoints(rAPI)
 	frontend.RegisterEndpoints(r)
 
 	return &WebServer{

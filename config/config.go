@@ -9,9 +9,13 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
+// Config is simple rename for interface. It does not have any specific functionality, yet.
 type Config interface{}
 
+// DataPath holds path for the folder in which data files are stored.
 var DataPath string
+
+// ConfigPath holds path for the folder in which config files are stored.
 var ConfigPath string
 
 // ReadTOML unmarshalizes file into the given Config struct.

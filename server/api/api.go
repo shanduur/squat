@@ -1,3 +1,6 @@
+/*
+Package api implements the data generation endpoint.
+*/
 package api
 
 import (
