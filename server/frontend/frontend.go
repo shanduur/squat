@@ -10,6 +10,7 @@ import (
 	"github.com/shanduur/squat/server/website"
 )
 
+// RegisterEndpoints registers all handlers for the application.
 func RegisterEndpoints(mux *mux.Router) {
 	mux.HandleFunc("/", handleIndex).Methods(http.MethodGet)
 	mux.HandleFunc("/table", handleTable).Methods(http.MethodGet)

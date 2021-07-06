@@ -34,6 +34,8 @@ func New(configPath string) (IfxProvider, error) {
 	return ifx, nil
 }
 
+// Initialize reads config and returns the provider with configuration read
+// from the config. By default it is called by New function, but can be used standalone.
 func (ifx *IfxProvider) Initialize(configPath string) (err error) {
 	err = config.ReadTOML(&ifx.cfg, configPath)
 	if err != nil {

@@ -14,6 +14,7 @@ type Config interface{}
 var DataPath string
 var ConfigPath string
 
+// ReadTOML unmarshalizes file into the given Config struct.
 func ReadTOML(cfg Config, filename string) error {
 	cfgFile, err := os.Open(path.Join(ConfigPath, filename))
 	if err != nil {

@@ -18,6 +18,7 @@ type WebServer struct {
 	shutdown chan bool
 }
 
+// New function creates new WebServer on given addres.
 func New(addr string) *WebServer {
 	r := mux.NewRouter()
 
@@ -47,6 +48,7 @@ func (srv *WebServer) teardown(ctx context.Context) error {
 	return nil
 }
 
+// Run functions starts the server and all complementary threads.
 func (srv *WebServer) Run() error {
 	term := make(chan os.Signal)
 	fail := make(chan error)
@@ -85,6 +87,8 @@ func (srv *WebServer) Run() error {
 	return <-fail
 }
 
+// Shutdown is used to perform safe shutdown of the server. It sends the
+// notification to the shutdown channel.
 func (srv *WebServer) Shutdown() {
 	srv.shutdown <- true
 }

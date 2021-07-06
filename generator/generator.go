@@ -10,13 +10,18 @@ import (
 	"strings"
 
 	"github.com/lucasjones/reggen"
+	"github.com/shanduur/squat/providers"
 )
 
+// Generator is the default generator struct definition
 type Generator struct {
-	dictionary   Dictionary
-	TagsAndRegex map[string]string
+	dictionary    Dictionary
+	TagsAndRegex  map[string]string
+	DateTempl     string
+	DateTimeTempl string
 }
 
+// Dictionary is a structure holding data read from the Dictionary gob file.
 type Dictionary struct {
 	Names     []string `json:"names"`
 	Surnames  []string `json:"surnames"`
@@ -25,6 +30,7 @@ type Dictionary struct {
 	Countries []string `json:"countries"`
 }
 
+// New creates new generator and loads gob file into dictionary.
 func New(path string) (Generator, error) {
 	gen := Generator{}
 
@@ -46,6 +52,13 @@ func New(path string) (Generator, error) {
 	return gen, nil
 }
 
+// SetTemplates is used to set templates specific for the providers.
+func (g *Generator) SetTemplates(p providers.Provider) {
+	g.DateTempl = p.DateFormat()
+	g.DateTimeTempl = p.DateTimeFormat()
+}
+
+// Get returns random element from the dictionary according to the tag.
 func (g Generator) Get(tag string) (string, error) {
 	switch tag {
 	case TagName:
@@ -81,6 +94,7 @@ func randYesNo() string {
 	return "No"
 }
 
+// Generate generates the data based on provided REGEX, length limit, and type.
 func (g Generator) Generate(regex string, limit int, t string) (string, error) {
 	out, err := reggen.Generate(regex, limit)
 	if err != nil {
@@ -122,6 +136,7 @@ func loadMap(m *map[string]string) {
 	(*m)["Number"] = RegexNumber
 }
 
+// Column describes each column after parsing the request.
 type Column struct {
 	Order     int
 	Include   bool
@@ -132,6 +147,7 @@ type Column struct {
 	TagRegex  string
 }
 
+// Query builds insert query based on the table description.
 func (gen Generator) Query(table string, dsc map[string]Column) (string, error) {
 	query := "INSERT INTO %s (%s) \nVALUES (%s);"
 

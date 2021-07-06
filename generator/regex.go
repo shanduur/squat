@@ -12,6 +12,7 @@ import (
 
 var ErrNotInDict = errors.New("tag not found in dictionary")
 
+// Constant defining default values supported for the generation of the data.
 const (
 	TagName      = "@name"
 	TagSurname   = "@surname"
@@ -34,6 +35,7 @@ const (
 	RegexNumber     = `^(\d*)$`
 )
 
+// ReadDump reads JSON file and serializes it into GOB file.
 func ReadDump(in string, out string) error {
 	cfgFile, err := os.Open(in)
 	if err != nil {

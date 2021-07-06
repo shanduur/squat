@@ -2,22 +2,31 @@ package commands
 
 import (
 	"log"
+	"os"
 
 	"github.com/shanduur/squat/server"
 	"github.com/spf13/cobra"
 )
 
 var (
-	port string
+	port    string
+	showEnv *bool
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "squat",
-	Short: "Server that provides simple SQL data generation functionality",
-	Long:  `This is server for SQL data generation app.`,
+	Short: "squat is the main command, used to start application server.",
+	Long: `Squat is an aplication that provides simple SQL data generation functionality. 
+
+It generates synthetic SQL data based on the table definition, that is gathered from the DBMS. 
+Squat supports IBM Informix, with planned support for PostgreSQL, MySQL, CockroachDB and MariaDB.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		srv := server.New(port)
+
+		if *showEnv {
+			info()
+		}
 
 		log.Printf("Server is listening on %s", port)
 		if err := srv.Run(); err != nil {
@@ -34,4 +43,15 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().StringVarP(&port, "port", "p", ":8080", "port on which REST API listenes")
+	showEnv = rootCmd.Flags().Bool("get-env", false, "if used, displays additional information about environmental variables on startup")
+}
+
+func info() {
+	log.Printf(`additional info requested
+
+	ENV:
+		CONFIG_LOCATION = %s
+		DATA_LOCATION = %s
+	
+	`, os.Getenv("CONFIG_LOCATION"), os.Getenv("DATA_LOCATION"))
 }

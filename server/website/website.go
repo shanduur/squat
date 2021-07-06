@@ -33,6 +33,7 @@ var (
 	//go:embed templates/partials/.Sources.html
 	partialSourcesHTML string
 
+	// template map is map of all tags used in template HTML files.
 	template = map[string]string{
 		"head":      "{{ .Head }}",
 		"body":      "{{ .Body }}",
@@ -54,6 +55,8 @@ var (
 	}
 )
 
+// BuildTables is a function used for building document which contains form
+// that is used to create GET request for the generator API.
 func BuildTables(src string, tab string, dsc []providers.Describe) (string, error) {
 	output := strings.ReplaceAll(mainHTML, template["head"], headHTML)
 	output = strings.ReplaceAll(output, template["body"], bodyTableHTML)
@@ -132,6 +135,8 @@ func BuildTables(src string, tab string, dsc []providers.Describe) (string, erro
 	return output, nil
 }
 
+// BuildIndex is the function for building HTML document consisting of
+// standard HTML parts. It builds document that is displayed as index.
 func BuildIndex(providers map[string]providers.Provider) string {
 	output := strings.ReplaceAll(mainHTML, template["head"], headHTML)
 	output = strings.ReplaceAll(output, template["body"], bodyIndexHTML)
@@ -150,6 +155,9 @@ func BuildIndex(providers map[string]providers.Provider) string {
 	return output
 }
 
+// PrintError is a function that parses error in the handler functions.
+// Its main functionality is to create cimple page displaying error code,
+// as well as some basic information about the error to the end user.
 func PrintError(w http.ResponseWriter, err error, statusCode int) {
 	w.WriteHeader(statusCode)
 

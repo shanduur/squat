@@ -20,18 +20,20 @@ import (
 func init() {
 	Providers = make(map[string]providers.Provider)
 
-	p, err := informix.New(path.Join(os.Getenv("CONFIG_LOCATION"), "informix.toml"))
-	if err != nil {
-		log.Fatalf("unable to create get new provider connection: %s", err.Error())
+	if p, err := informix.New(path.Join(os.Getenv("CONFIG_LOCATION"), "informix.toml")); err != nil {
+		log.Printf("unable to create new provider connection: %s", err.Error())
+		log.Printf("check if env variables CONFIG_LOCATION and DATA_LOCATION are set")
+	} else {
+		Providers[p.ProviderName()] = p
 	}
-
-	Providers[p.ProviderName()] = p
 }
 
-// Providers
+// Providers map holds all the providers that are currently supported and
+// are available to use. If config file was not found, then the provider
+// won't be inserted into this map.
 var Providers map[string]providers.Provider
 
-// RegisterEndpoints
+// RegisterEndpoints registers all handlers for the application.
 func RegisterEndpoints(mux *mux.Router) {
 	mux.HandleFunc("/generate", generate).Methods(http.MethodGet)
 }
@@ -59,6 +61,8 @@ func generate(w http.ResponseWriter, req *http.Request) {
 		website.PrintError(w, fmt.Errorf("unable to get generator: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
+
+	gen.SetTemplates(p)
 
 	var out []string
 	for i := 0; i <= 100; i++ {
