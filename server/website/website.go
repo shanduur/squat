@@ -1,4 +1,4 @@
-package ui
+package website
 
 import (
 	_ "embed"
@@ -9,10 +9,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/gorilla/mux"
 	"github.com/shanduur/squat/generator"
 	"github.com/shanduur/squat/providers"
-	"github.com/shanduur/squat/server/api"
 )
 
 var (
@@ -22,6 +20,8 @@ var (
 	headHTML string
 	//go:embed templates/.Body.index.html
 	bodyIndexHTML string
+	//go:embed templates/.Body.error.html
+	bodyErrorHTML string
 	//go:embed templates/.Body.table.html
 	bodyTableHTML string
 	//go:embed templates/.Script.table.js
@@ -48,42 +48,13 @@ var (
 		"options":   "{{ .Options }}",
 		"sources":   "{{ .Sources }}",
 		"display":   "{{ .Display }}",
+		"message":   "{{ .Message }}",
 		"template":  "{{ .Template }}",
 		"precision": "{{ .Precision }}",
 	}
 )
 
-func RegisterEndpoints(mux *mux.Router) {
-	mux.HandleFunc("/", handleIndex).Methods(http.MethodGet)
-	mux.HandleFunc("/table", handleTable).Methods(http.MethodGet)
-}
-
-func handleIndex(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte(buildIndex()))
-}
-
-func handleTable(w http.ResponseWriter, req *http.Request) {
-	req.ParseForm()
-	src := req.FormValue("source")
-	tab := req.FormValue("table")
-
-	p := api.Providers[src]
-	if p != nil {
-		dsc, err := p.GetTableDescription(tab)
-		if err != nil {
-			log.Printf("unable to get table description: %s", err.Error())
-		}
-
-		out, err := buildTables(src, tab, dsc)
-		if err != nil {
-			log.Printf("unable to build tables: %s", err.Error())
-			return
-		}
-		w.Write([]byte(out))
-	}
-}
-
-func buildTables(src string, tab string, dsc []providers.Describe) (string, error) {
+func BuildTables(src string, tab string, dsc []providers.Describe) (string, error) {
 	output := strings.ReplaceAll(mainHTML, template["head"], headHTML)
 	output = strings.ReplaceAll(output, template["body"], bodyTableHTML)
 	output = strings.ReplaceAll(output, template["script"], scriptTableJS)
@@ -161,14 +132,14 @@ func buildTables(src string, tab string, dsc []providers.Describe) (string, erro
 	return output, nil
 }
 
-func buildIndex() string {
+func BuildIndex(providers map[string]providers.Provider) string {
 	output := strings.ReplaceAll(mainHTML, template["head"], headHTML)
 	output = strings.ReplaceAll(output, template["body"], bodyIndexHTML)
 	output = strings.ReplaceAll(output, template["script"], "")
 	output = strings.ReplaceAll(output, template["sources"], partialSourcesHTML)
 
 	var options string
-	for i := range api.Providers {
+	for i := range providers {
 		opt := strings.ReplaceAll(partialOptionHTML, template["name"], i)
 		opt = strings.ReplaceAll(opt, template["display"], i)
 		options = fmt.Sprintf("%s\n%s", options, opt)
@@ -177,4 +148,18 @@ func buildIndex() string {
 	output = strings.ReplaceAll(output, template["options"], options)
 
 	return output
+}
+
+func PrintError(w http.ResponseWriter, err error, statusCode int) {
+	w.WriteHeader(statusCode)
+
+	output := strings.ReplaceAll(mainHTML, template["head"], headHTML)
+	output = strings.ReplaceAll(output, template["body"], bodyErrorHTML)
+	output = strings.ReplaceAll(output, template["script"], "")
+	output = strings.ReplaceAll(output, template["order"], fmt.Sprint(statusCode))
+	output = strings.ReplaceAll(output, template["message"], err.Error())
+
+	w.Write([]byte(output))
+
+	log.Print(err.Error())
 }

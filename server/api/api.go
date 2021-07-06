@@ -14,6 +14,7 @@ import (
 	"github.com/shanduur/squat/generator"
 	"github.com/shanduur/squat/providers"
 	"github.com/shanduur/squat/providers/informix"
+	"github.com/shanduur/squat/server/website"
 )
 
 func init() {
@@ -41,7 +42,7 @@ func generate(w http.ResponseWriter, req *http.Request) {
 
 	p := Providers[src]
 	if p == nil {
-		log.Printf("data source not found: %s", src)
+		website.PrintError(w, fmt.Errorf("data source not found: %s", src), http.StatusInternalServerError)
 		return
 	}
 
@@ -49,13 +50,13 @@ func generate(w http.ResponseWriter, req *http.Request) {
 
 	tab, err := parse(req.Form)
 	if err != nil {
-		log.Printf("unable to parse request form: %s", err.Error())
+		website.PrintError(w, fmt.Errorf("unable to parse request form: %s", err.Error()), http.StatusBadRequest)
 		return
 	}
 
 	gen, err := generator.New(path.Join(os.Getenv("DATA_LOCATION"), "data.gob"))
 	if err != nil {
-		log.Printf("unable to get generator: %s", err.Error())
+		website.PrintError(w, fmt.Errorf("unable to get generator: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 
@@ -63,7 +64,7 @@ func generate(w http.ResponseWriter, req *http.Request) {
 	for i := 0; i <= 100; i++ {
 		q, err := gen.Query(req.FormValue("source-table"), tab)
 		if err != nil {
-			log.Printf("unable to generate query: %s", err.Error())
+			website.PrintError(w, fmt.Errorf("unable to generate query: %s", err.Error()), http.StatusInternalServerError)
 			return
 		}
 
@@ -103,12 +104,20 @@ func parse(form url.Values) (map[string]generator.Column, error) {
 				return table, fmt.Errorf("unable to convert length: %s", err.Error())
 			}
 
+			if i < 1 {
+				return table, fmt.Errorf("value out of range: %d", i)
+			}
+
 			lengths[strings.ReplaceAll(k, "length-", "")] = i
 
 		} else if strings.Contains(k, "precision-") {
 			i, err := strconv.Atoi(v[0])
 			if err != nil {
 				return table, fmt.Errorf("unable to convert precision: %s", err.Error())
+			}
+
+			if i < 0 {
+				return table, fmt.Errorf("value out of range: %d", i)
 			}
 
 			precisions[strings.ReplaceAll(k, "precision-", "")] = i

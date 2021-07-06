@@ -66,6 +66,10 @@ func (ifx IfxProvider) GetTableDescription(name string) (dsc []providers.Describ
 		dsc = append(dsc, d)
 	}
 
+	if len(dsc) < 1 {
+		err = providers.ErrNoResult
+	}
+
 	return
 }
 

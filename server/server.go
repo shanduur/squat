@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/shanduur/squat/server/api"
-	"github.com/shanduur/squat/server/ui"
+	"github.com/shanduur/squat/server/frontend"
 )
 
 type WebServer struct {
@@ -24,7 +24,7 @@ func New(addr string) *WebServer {
 	rApi := r.PathPrefix("/api/v1").Subrouter()
 
 	api.RegisterEndpoints(rApi)
-	ui.RegisterEndpoints(r)
+	frontend.RegisterEndpoints(r)
 
 	return &WebServer{
 		Server: &http.Server{

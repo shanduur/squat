@@ -1,6 +1,11 @@
 package providers
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+)
+
+var ErrNoResult = fmt.Errorf("table does not exist")
 
 type Describe struct {
 	ColumnName      sql.NullString
