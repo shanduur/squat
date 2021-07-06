@@ -2,8 +2,8 @@
   <img src="other/squat.png"/>
 </p>
 
-
 ![license](https://img.shields.io/github/license/shanduur/squat)
+![go version](https://img.shields.io/github/go-mod/go-version/shanduur/squat)
 ![go report](https://goreportcard.com/badge/github.com/shanduur/squat)
 
 # Squat
