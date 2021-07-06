@@ -34,18 +34,22 @@ var (
 	partialSourcesHTML string
 
 	template = map[string]string{
-		"head":     "{{ .Head }}",
-		"body":     "{{ .Body }}",
-		"rows":     "{{ .Rows }}",
-		"name":     "{{ .Name }}",
-		"type":     "{{ .Type }}",
-		"table":    "{{ .Table }}",
-		"script":   "{{ .Script }}",
-		"source":   "{{ .Source }}",
-		"options":  "{{ .Options }}",
-		"sources":  "{{ .Sources }}",
-		"display":  "{{ .Display }}",
-		"template": "{{ .Template }}",
+		"head":      "{{ .Head }}",
+		"body":      "{{ .Body }}",
+		"rows":      "{{ .Rows }}",
+		"name":      "{{ .Name }}",
+		"type":      "{{ .Type }}",
+		"order":     "{{ .Order }}",
+		"table":     "{{ .Table }}",
+		"script":    "{{ .Script }}",
+		"fomrat":    "{{ .Format }}",
+		"length":    "{{ .Length }}",
+		"source":    "{{ .Source }}",
+		"options":   "{{ .Options }}",
+		"sources":   "{{ .Sources }}",
+		"display":   "{{ .Display }}",
+		"template":  "{{ .Template }}",
+		"precision": "{{ .Precision }}",
 	}
 )
 
@@ -99,11 +103,23 @@ func buildTables(src string, tab string, dsc []providers.Describe) (string, erro
 	output = strings.ReplaceAll(output, template["template"], options)
 
 	var rows string
-	for _, d := range dsc {
+	for i, d := range dsc {
 		opt := options
 		row := partialRowsHTML
+		row = strings.ReplaceAll(row, template["order"], fmt.Sprint(i))
+
 		if d.ColumnType.Valid {
 			row = strings.ReplaceAll(row, template["type"], d.ColumnType.String)
+		}
+
+		if d.ColumnLength.Valid {
+			row = strings.ReplaceAll(row, template["length"], fmt.Sprintf("%d", d.ColumnLength.Int64))
+		}
+
+		if d.ColumnPrecision.Valid {
+			row = strings.ReplaceAll(row, template["precision"], fmt.Sprintf("%d", d.ColumnPrecision.Int64))
+		} else {
+			row = strings.ReplaceAll(row, template["precision"], "0")
 		}
 
 		if strings.Contains(d.ColumnType.String, generator.TypeInt) {

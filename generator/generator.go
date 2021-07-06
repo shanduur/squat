@@ -3,8 +3,11 @@ package generator
 import (
 	"encoding/gob"
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
+	"sort"
+	"strings"
 
 	"github.com/lucasjones/reggen"
 )
@@ -55,13 +58,47 @@ func (g Generator) Get(tag string) (string, error) {
 		return g.dictionary.States[rand.Intn(len(g.dictionary.States))], nil
 	case TagCountry:
 		return g.dictionary.Countries[rand.Intn(len(g.dictionary.Countries))], nil
+	case TagDate:
+		return "", nil
+	case TagDateTime:
+		return "", nil
+	case TagTimestamp:
+		return "", nil
+	case TagBool:
+		return fmt.Sprint(rand.Intn(1) != 0), nil
+	case TagYesNo:
+		return randYesNo(), nil
 	default:
 		return "", ErrNotInDict
 	}
 }
 
-func (g Generator) Generate(regex string, limit int) (string, error) {
-	return reggen.Generate(regex, limit)
+func randYesNo() string {
+	if rand.Intn(1) != 0 {
+		return "Yes"
+	}
+
+	return "No"
+}
+
+func (g Generator) Generate(regex string, limit int, t string) (string, error) {
+	out, err := reggen.Generate(regex, limit)
+	if err != nil {
+		return out, fmt.Errorf("unable to generate from %s with limit %d: %s", regex, limit, err.Error())
+	}
+
+	switch t {
+	case TypeChar:
+		fallthrough
+	case TypeDate:
+		fallthrough
+	case TypeDateTime:
+		fallthrough
+	case TypeTimestamp:
+		out = fmt.Sprintf(`"%s"`, out)
+	}
+
+	return out, nil
 }
 
 func loadMap(m *map[string]string) {
@@ -86,44 +123,59 @@ func loadMap(m *map[string]string) {
 }
 
 type Column struct {
-	Include  bool
-	Name     string
-	Type     string
-	TagRegex string
+	Order     int
+	Include   bool
+	Name      string
+	Type      string
+	Length    int
+	Precision int
+	TagRegex  string
 }
 
-func (gen Generator) Query(dsc map[string]Column) string {
-	// query := "INSERT INTO (%s) VALUES (%s);"
-	// var (
-	// 	columns []string
-	// 	values  []string
-	// )
+func (gen Generator) Query(table string, dsc map[string]Column) (string, error) {
+	query := "INSERT INTO %s (%s) \nVALUES (%s);"
 
-	// var template string
-	// for _, d := range dsc {
-	// 	columns = append(columns, d.ColumnName.String)
+	columns := make(map[int]string)
+	values := make(map[int]string)
 
-	// 	switch d.ColumnName.String {
-	// 	case TypeChar:
-	// 		fallthrough
-	// 	case TypeDate:
-	// 		fallthrough
-	// 	case TypeDateTime:
-	// 		fallthrough
-	// 	case TypeTimestamp:
-	// 		template = `"%s"`
-
-	// 	default:
-	// 		template = `%s`
-	// 	}
-
-	// 	values = append(values, fmt.Sprintf(template))
-	// }
-
-	out := ""
 	for k, v := range dsc {
-		out = fmt.Sprintf("%s\n%s: %+v", out, k, v)
+		if !v.Include {
+			log.Printf("%s", k)
+			continue
+		}
+
+		columns[v.Order] = k
+
+		if strings.Contains(v.TagRegex, "@") {
+			s, err := gen.Get(v.TagRegex)
+			if err != nil {
+				return "", fmt.Errorf("unable to obtain value %s: %s", v.TagRegex, err.Error())
+			}
+
+			values[v.Order] = s
+			continue
+		}
+
+		s, err := gen.Generate(v.TagRegex, v.Length, v.Type)
+		if err != nil {
+			return "", fmt.Errorf("unable to generate from %s and length %d: %s", v.TagRegex, v.Length, err.Error())
+		}
+		values[v.Order] = s
 	}
 
-	return out
+	keys := make([]int, 0)
+	for k := range columns {
+		keys = append(keys, k)
+	}
+	sort.Ints(keys)
+
+	c := make([]string, 0)
+	v := make([]string, 0)
+
+	for _, i := range keys {
+		c = append(c, columns[i])
+		v = append(v, values[i])
+	}
+
+	return fmt.Sprintf(query, table, strings.Join(c, ", "), strings.Join(v, ", ")), nil
 }

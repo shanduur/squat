@@ -1,7 +1,10 @@
 <tr>
+  <td><input type="number" name="order-{{ .Name }}" value="{{ .Order }}" readonly="readonly" style="width:48px;"></td>
   <td><input type="checkbox" name="include-{{ .Name }}" checked=true></td>
   <td><input type="text" name="name-{{ .Name }}" value="{{ .Name }}" readonly="readonly"></td>
   <td><input type="text" name="type-{{ .Name }}" value="{{ .Type }}" readonly="readonly"></td>
+  <td><input type="number" name="length-{{ .Name }}" value="{{ .Length }}" readonly="readonly"></td>
+  <td><input type="number" name="precision-{{ .Name }}" value="{{ .Precision }}" readonly="readonly"></td>
   <td><input type="checkbox" name="unique-{{ .Name }}"></td>
   <td>
     <select name="regex-{{ .Name }}">

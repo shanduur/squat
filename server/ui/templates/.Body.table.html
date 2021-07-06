@@ -1,4 +1,5 @@
 <h1>Data Generator</h1>
+<textarea id="format" hidden>{{ .Format }}</textarea>
 <textarea id="template" hidden>{{ .Template }}</textarea>
 <form>
   <input type="radio" checked hidden name="source" value="{{ .Source }}">
@@ -6,9 +7,12 @@
   <table>
     <thead>
       <tr>
+        <td><b>No</b></td>
         <td><b>Include</b></td>
         <td><b>Name</b></td>
         <td><b>Type</b></td>
+        <td><b>Length</b></td>
+        <td><b>Precision</b></td>
         <td><b>Unique</b></td>
         <td><b>Data</b></td>
         <td><b>Custom</b></td>

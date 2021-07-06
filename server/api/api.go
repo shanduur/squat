@@ -1,11 +1,13 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -45,7 +47,11 @@ func generate(w http.ResponseWriter, req *http.Request) {
 
 	// out := fmt.Sprintf("-- generated on %v\n", time.Now().Format(p.DateTimeFormat()))
 
-	tab := parse(req.Form)
+	tab, err := parse(req.Form)
+	if err != nil {
+		log.Printf("unable to parse request form: %s", err.Error())
+		return
+	}
 
 	gen, err := generator.New(path.Join(os.Getenv("DATA_LOCATION"), "data.gob"))
 	if err != nil {
@@ -53,16 +59,28 @@ func generate(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	q := gen.Query(tab)
+	var out []string
+	for i := 0; i <= 100; i++ {
+		q, err := gen.Query(req.FormValue("source-table"), tab)
+		if err != nil {
+			log.Printf("unable to generate query: %s", err.Error())
+			return
+		}
 
-	w.Write([]byte(q))
+		out = append(out, q)
+	}
+
+	w.Write([]byte(strings.Join(out, "\n")))
 }
 
-func parse(form url.Values) map[string]generator.Column {
+func parse(form url.Values) (map[string]generator.Column, error) {
 	table := make(map[string]generator.Column)
 
+	orders := make(map[string]int)
 	names := make(map[string]string)
 	types := make(map[string]string)
+	lengths := make(map[string]int)
+	precisions := make(map[string]int)
 	includes := make(map[string]string)
 	tagsregexes := make(map[string]string)
 
@@ -79,14 +97,42 @@ func parse(form url.Values) map[string]generator.Column {
 		} else if strings.Contains(k, "regex-") {
 			tagsregexes[strings.ReplaceAll(k, "regex-", "")] = v[0]
 
+		} else if strings.Contains(k, "length-") {
+			i, err := strconv.Atoi(v[0])
+			if err != nil {
+				return table, fmt.Errorf("unable to convert length: %s", err.Error())
+			}
+
+			lengths[strings.ReplaceAll(k, "length-", "")] = i
+
+		} else if strings.Contains(k, "precision-") {
+			i, err := strconv.Atoi(v[0])
+			if err != nil {
+				return table, fmt.Errorf("unable to convert precision: %s", err.Error())
+			}
+
+			precisions[strings.ReplaceAll(k, "precision-", "")] = i
+
+		} else if strings.Contains(k, "order-") {
+			i, err := strconv.Atoi(v[0])
+			if err != nil {
+				return table, fmt.Errorf("unable to convert order: %s", err.Error())
+			}
+
+			orders[strings.ReplaceAll(k, "order-", "")] = i
+
 		}
+
 	}
 
-	for k, _ := range names {
+	for k := range names {
 		var col generator.Column
 
+		col.Order = orders[k]
 		col.Name = names[k]
 		col.Type = types[k]
+		col.Length = lengths[k]
+		col.Precision = precisions[k]
 		col.TagRegex = tagsregexes[k]
 
 		if includes[k] == "on" {
@@ -98,5 +144,5 @@ func parse(form url.Values) map[string]generator.Column {
 		table[k] = col
 	}
 
-	return table
+	return table, nil
 }

@@ -11,7 +11,7 @@ function addRow() {
 
   row.id = "deletable-{x}".replace("{x}", rows + 1);
 
-  for (let i = 1; i <= 8; i++) {
+  for (let i = 1; i <= 10; i++) {
     cols.push(document.createElement("td"));
   }
 
