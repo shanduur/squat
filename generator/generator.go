@@ -13,6 +13,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/lucasjones/reggen"
 	"github.com/shanduur/squat/providers"
@@ -77,11 +78,11 @@ func (g Generator) Get(tag string) (string, error) {
 	case TagCountry:
 		return g.dictionary.Countries[rand.Intn(len(g.dictionary.Countries))], nil
 	case TagDate:
-		return "", nil
+		return fmt.Sprintf(`'%s'`, time.Now().Format(g.DateTempl)), nil
 	case TagDateTime:
-		return "", nil
+		return fmt.Sprintf(`'%s'`, time.Now().Format(g.DateTimeTempl)), nil
 	case TagTimestamp:
-		return "", nil
+		return fmt.Sprintf(`'%s'`, time.Now().Format(g.DateTimeTempl)), nil
 	case TagBool:
 		return fmt.Sprint(rand.Intn(1) != 0), nil
 	case TagYesNo:
@@ -114,7 +115,7 @@ func (g Generator) Generate(regex string, limit int, t string) (string, error) {
 	case TypeDateTime:
 		fallthrough
 	case TypeTimestamp:
-		out = fmt.Sprintf(`"%s"`, out)
+		out = fmt.Sprintf(`'%s'`, out)
 	}
 
 	return out, nil

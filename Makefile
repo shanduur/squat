@@ -18,3 +18,7 @@ run:
 
 .PHONY: all
 all: build run
+
+.PHONY: docker
+docker:
+	cd Docker && docker buildx build --tag squat:0.1 .

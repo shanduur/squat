@@ -11,45 +11,162 @@ function addRow() {
 
   row.id = "deletable-{x}".replace("{x}", rows + 1);
 
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 11; i++) {
     cols.push(document.createElement("td"));
   }
+
+  var newColName = document.getElementById("newColName")
+  var name = newColName.value;
+  var type = document.getElementById("newColType").value;
+
+  addNo(cols[0], name, rows+1);
+  addInclude(cols[1], name);
+  addName(cols[2], name);
+  addType(cols[3], name, type);
+  addLength(cols[4], name, 1);
+  addPrecision(cols[5], name, 0);
+  addUnique(cols[6], name);
+  addData(cols[7], name);
+  addCustom(cols[8], name);
+  addREGEX(cols[9], name);
+  addDelete(cols[10], rows+1);
 
   for (c in cols) {
     row.appendChild(cols[c]);
   }
 
-  cols[0].innerHTML = '<input type="checkbox"  name="include{x}" checked=true>';
-  cols[0].innerHTML = cols[0].innerHTML.replace("{x}", rows + 1);
-  
-  cols[1].innerHTML = '<input type="text" name="name-{x}" value="' + document.getElementById("newColName").value + '">';
-  cols[1].innerHTML = cols[1].innerHTML.replace("{x}", rows + 1);
-  
-  cols[2].innerHTML = '<input type="text" name="type-{x}" value="' + document.getElementById("newColType").value  + '">';
-  cols[2].innerHTML = cols[2].innerHTML.replace("{x}", rows + 1);
-  
-  cols[3].innerHTML = '<td><input type="checkbox" name="unique-{x}"></td>'
-  cols[3].innerHTML = cols[3].innerHTML.replace("{x}", rows + 1);
-
-  
-  cols[4].innerHTML =
-    '<select name="regex-opt{x}">' +
-    document.getElementById("template").value
-    "</select>";
-  cols[4].innerHTML = cols[4].innerHTML.replace("{x}", rows + 1);
-
-  cols[5].innerHTML = '<input type="checkbox"  name="custom-{x}">';
-  cols[5].innerHTML = cols[5].innerHTML.replace("{x}", rows + 1);
-  
-  cols[6].innerHTML = '<input type="text"      name="regex-{x}">';
-  cols[6].innerHTML = cols[6].innerHTML.replace("{x}", rows + 1);
-  
-  cols[7].innerHTML =
-    '<button type="button" onclick=\'deleteRow("{id}")\'>' +
-    "  Delete Row" +
-    "</button>";
-  cols[7].innerHTML = cols[7].innerHTML.replace("{x}", rows + 1);
-  cols[7].innerHTML = cols[7].innerHTML.replace("{id}", "deletable-{x}".replace("{x}", rows + 1));
-
   table.appendChild(row);
+
+  if (/^(.*\d+)$/.test(name)) {
+    newColName.value = name.replace(/\d+/, String(rows+1));
+  } else {
+    newColName.value = name + "_" + String(rows+1);
+  }
+
+}
+
+{/* <td><input type="number" name="order-{{ .Name }}" value="{{ .Order }}" style="width:48px;"></td> */}
+function addNo(td, name, order) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "number");
+  input.setAttribute("name", "order-{{ .Name }}".replace("{{ .Name }}", name));
+  input.setAttribute("value", String(order));
+  input.setAttribute("style", "width:48px;");
+
+  td.appendChild(input);
+}
+
+{/* <td><input type="checkbox" name="include-{{ .Name }}" checked=true></td> */}
+function addInclude(td, name) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "checkbox");
+  input.setAttribute("name", "include-{{ .Name }}".replace("{{ .Name }}", name));
+  input.setAttribute("checked", true);
+
+  td.appendChild(input);
+}
+
+{/* <td><input type="text" name="name-{{ .Name }}" value="{{ .Name }}"></td> */}
+function addName(td, name) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type","text");
+  input.setAttribute("name", "name-{{ .Name }}".replace("{{ .Name }}", name));
+  input.setAttribute("value", "{{ .Name }}".replace("{{ .Name }}", name));
+
+  td.appendChild(input);
+}
+
+{/* <td><input type="text" name="type-{{ .Name }}" value="{{ .Type }}"></td> */}
+function addType(td, name, type) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "text");
+  input.setAttribute("name", "type-{{ .Name }}".replace("{{ .Name }}", name));
+  input.setAttribute("value", "{{ .Type }}".replace("{{ .Type }}", type));
+
+
+  td.appendChild(input);
+}
+
+{/* <td><input type="number" name="length-{{ .Name }}" value="{{ .Length }}"></td> */}
+function addLength(td, name, length) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "number");
+  input.setAttribute("name","length-{{ .Name }}".replace("{{ .Name }}", name));
+  input.setAttribute("name","length-{{ .Name }}".replace("{{ .Name }}", name));
+  input.setAttribute("value", String(length));
+
+  td.appendChild(input);
+}
+
+{/* <td><input type="number" name="precision-{{ .Name }}" value="{{ .Precision }}"></td> */}
+function addPrecision(td, name, precision) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "number");
+  input.setAttribute("name", "precision-{{ .Name }}".replace("{{ .Name }}", name));
+  input.setAttribute("value", String(precision));
+
+  td.appendChild(input);
+}
+
+{/* <td><input type="checkbox" name="unique-{{ .Name }}"></td> */}
+function addUnique(td, name) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "checkbox");
+  input.setAttribute("name", "unique-{{ .Name }}".replace("{{ .Name }}", name))
+
+  td.appendChild(input);
+}
+
+{/* <td> */}
+{/* <select name="regex-{{ .Name }}"> */}
+{/* {{ .Options }} */}
+{/* </select> */}
+{/* </td> */}
+function addData(td, name) {
+  var select = document.createElement("select");
+
+  select.setAttribute("name", "regex-{{ .Name }}".replace("{{ .Name }}", name));
+  select.innerHTML = document.getElementById("template").value
+
+  td.appendChild(select);
+}
+
+{/* <td><input type="checkbox" name="custom-{{ .Name }}"></td> */}
+function addCustom(td, name) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "checkbox");
+  input.setAttribute("name", "custom-{{ .Name }}".replace("{{ .Name }}", name));
+
+  td.appendChild(input);
+}
+
+{/* <td><input type="text" name="custom-regex-{{ .Name }}"></td> */}
+function addREGEX(td, name) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "text");
+  input.setAttribute("name", "custom-regex-{{ .Name }}".replace("{{ .Name }}", name));
+
+  td.appendChild(input);
+}
+
+{/* <button type="submit" formaction="/api/v1/generate" target="_blank"> */}
+{/* Generate */}
+{/* </button> */}
+function addDelete(td, id) {
+  var button = document.createElement("button");
+
+  button.setAttribute("type", "button");
+  button.setAttribute("onclick", 'deleteRow("deletable-{{ .Id }}")'.replace("{{ .Id }}", id));
+  button.innerHTML = "Delete"
+
+  td.appendChild(button);
 }
