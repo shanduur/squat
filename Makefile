@@ -26,4 +26,5 @@ docker:
 		--output=type=registry \
 		--no-cache \
 		--tag shanduur/squat:0.1 \
+		--tag shanduur/squat:latest \
 		.
