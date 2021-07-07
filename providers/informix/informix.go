@@ -73,7 +73,10 @@ func (ifx IfxProvider) GetTableDescription(name string) (dsc []providers.Describ
 
 	d := providers.Describe{}
 	for rows.Next() {
-		rows.Scan(&d.ColumnName, &d.ColumnType, &d.ColumnLength, &d.ColumnPrecision, &d.Nullable)
+		err = rows.Scan(&d.ColumnName, &d.ColumnType, &d.ColumnLength, &d.ColumnPrecision, &d.Nullable)
+		if err != nil {
+			return nil, fmt.Errorf("scan failed: %s", err.Error())
+		}
 		dsc = append(dsc, d)
 	}
 

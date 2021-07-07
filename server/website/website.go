@@ -89,10 +89,14 @@ func BuildTables(src string, tab string, dsc []providers.Describe) (string, erro
 
 		if d.ColumnType.Valid {
 			row = strings.ReplaceAll(row, template["type"], d.ColumnType.String)
+		} else {
+			row = strings.ReplaceAll(row, template["type"], "")
 		}
 
 		if d.ColumnLength.Valid {
 			row = strings.ReplaceAll(row, template["length"], fmt.Sprintf("%d", d.ColumnLength.Int64))
+		} else {
+			row = strings.ReplaceAll(row, template["length"], "1")
 		}
 
 		if d.ColumnPrecision.Valid {
@@ -101,25 +105,25 @@ func BuildTables(src string, tab string, dsc []providers.Describe) (string, erro
 			row = strings.ReplaceAll(row, template["precision"], "0")
 		}
 
-		if strings.Contains(d.ColumnType.String, generator.TypeInt) {
+		if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeInt) {
 			opt = strings.ReplaceAll(opt, generator.RegexNumber+`"`, generator.RegexNumber+`"`+`selected="selected"`)
 
-		} else if strings.Contains(d.ColumnType.String, generator.TypeChar) {
+		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeChar) {
 			opt = strings.ReplaceAll(opt, generator.RegexWord+`"`, generator.RegexWord+`"`+`selected="selected"`)
 
-		} else if strings.Contains(d.ColumnType.String, generator.TypeFloat) {
+		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeFloat) {
 			opt = strings.ReplaceAll(opt, generator.RegexNumber+`"`, generator.RegexNumber+`"`+`selected="selected"`)
 
-		} else if strings.Contains(d.ColumnType.String, generator.TypeDecimal) {
+		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeDecimal) {
 			opt = strings.ReplaceAll(opt, generator.RegexNumber+`"`, generator.RegexNumber+`"`+`selected="selected"`)
 
-		} else if strings.Contains(d.ColumnType.String, generator.TypeTimestamp) {
+		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeTimestamp) {
 			opt = strings.ReplaceAll(opt, generator.TagTimestamp+`"`, generator.TagTimestamp+`"`+`selected="selected"`)
 
-		} else if strings.Contains(d.ColumnType.String, generator.TypeDateTime) {
+		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeDateTime) {
 			opt = strings.ReplaceAll(opt, generator.TagDateTime+`"`, generator.TagDateTime+`"`+`selected="selected"`)
 
-		} else if strings.Contains(d.ColumnType.String, generator.TypeDate) {
+		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeDate) {
 			opt = strings.ReplaceAll(opt, generator.TagDate+`"`, generator.TagDate+`"`+`selected="selected"`)
 
 		}

@@ -14,11 +14,16 @@ include dev.env
 export
 .PHONY: run
 run:
-	./build/squat
+	./build/squat -p ":8081"
 
 .PHONY: all
 all: build run
 
 .PHONY: docker
 docker:
-	cd Docker && docker buildx build --tag squat:0.1 .
+	cd Docker && docker buildx build \
+		--platform linux/amd64,linux/arm64 \
+		--output=type=registry \
+		--no-cache \
+		--tag shanduur/squat:0.1 \
+		.

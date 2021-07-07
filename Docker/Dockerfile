@@ -31,11 +31,11 @@ ENV CONFIG_LOCATION=/etc/squat/config/
 ENV DATA_LOCATION=/etc/squat/data/
 
 # copy executable files
-COPY --from=build /tmp/squat/build/squat /bin/squat
-COPY --from=build /tmp/squat/build/gob-generator /bin/gob-generator
-COPY --from=build /tmp/squat/bin/squat-run.sh /bin/squat-run.sh
-COPY --from=build /tmp/squat/bin/data /etc/squat/
-COPY --from=build /tmp/squat/bin/config /etc/squat/
+COPY --from=build /tmp/squat/build/squat            /bin/squat
+COPY --from=build /tmp/squat/build/gob-generator    /bin/gob-generator
+COPY --from=build /tmp/squat/bin/squat-run.sh       /bin/squat-run.sh
+COPY --from=build /tmp/squat/bin/data               /etc/squat/data
+COPY --from=build /tmp/squat/bin/config             /etc/squat/config
 
 # make them executable
 RUN chmod +x /bin/squat /bin/gob-generator /bin/squat-run.sh

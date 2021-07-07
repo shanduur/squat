@@ -1,11 +1,20 @@
-version: "3.9"
+version: '3.9'
 services:
     squat:
-        image: shanduur/squat
-        ports: "8080:8080"
+        image: shanduur/squat:0.1
+        restart: on-failure
+        ports: 
+            - '8080:8080'
         volumes:
             - data:/etc/squat/data
             - config:/etc/squat/config
+    db:
+        image: postgres
+        restart: on-failure
+        ports:
+            - '5432:5432'
+        environment:
+            POSTGRES_PASSWORD: example
 volumes: 
     data:
     config:
