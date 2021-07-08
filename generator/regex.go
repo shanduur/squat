@@ -17,6 +17,8 @@ var ErrNotInDict = errors.New("tag not found in dictionary")
 const (
 	TagName      = "@name"
 	TagSurname   = "@surname"
+	TagInteger   = "@integer"
+	TagDecimal   = "@decimal"
 	TagCity      = "@city"
 	TagState     = "@state"
 	TagCountry   = "@country"
@@ -33,7 +35,6 @@ const (
 	RegexNIP        = `^(\d{10})`
 	RegexREGON      = `^(\d{9})`
 	RegexWord       = `^([A-Z][a-z]+)(-[A-Z][a-z]+)?$`
-	RegexNumber     = `^(\d*)$`
 )
 
 // ReadDump reads JSON file and serializes it into GOB file.

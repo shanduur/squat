@@ -19,6 +19,10 @@ run:
 .PHONY: all
 all: build run
 
+.PHONY: data
+data: tools
+	./build/gob-generator -i bin/data/data.json -o bin/data/data.gob
+
 .PHONY: docker
 docker:
 	cd Docker && docker buildx build \

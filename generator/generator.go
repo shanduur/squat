@@ -8,7 +8,6 @@ package generator
 import (
 	"encoding/gob"
 	"fmt"
-	"log"
 	"math/rand"
 	"os"
 	"sort"
@@ -68,25 +67,29 @@ func (g *Generator) SetTemplates(p providers.Provider) {
 func (g Generator) Get(tag string) (string, error) {
 	switch tag {
 	case TagName:
-		return g.dictionary.Names[rand.Intn(len(g.dictionary.Names))], nil
+		return fmt.Sprintf(`'%s'`, strings.ReplaceAll(g.dictionary.Names[rand.Intn(len(g.dictionary.Names))], "'", "`")), nil
 	case TagSurname:
-		return g.dictionary.Surnames[rand.Intn(len(g.dictionary.Surnames))], nil
+		return fmt.Sprintf(`'%s'`, strings.ReplaceAll(g.dictionary.Surnames[rand.Intn(len(g.dictionary.Surnames))], "'", "`")), nil
 	case TagCity:
-		return g.dictionary.Cities[rand.Intn(len(g.dictionary.Cities))], nil
+		return fmt.Sprintf(`'%s'`, strings.ReplaceAll(g.dictionary.Cities[rand.Intn(len(g.dictionary.Cities))], "'", "`")), nil
 	case TagState:
-		return g.dictionary.States[rand.Intn(len(g.dictionary.States))], nil
+		return fmt.Sprintf(`'%s'`, strings.ReplaceAll(g.dictionary.States[rand.Intn(len(g.dictionary.States))], "'", "`")), nil
 	case TagCountry:
-		return g.dictionary.Countries[rand.Intn(len(g.dictionary.Countries))], nil
+		return fmt.Sprintf(`'%s'`, strings.ReplaceAll(g.dictionary.Countries[rand.Intn(len(g.dictionary.Countries))], "'", "`")), nil
 	case TagDate:
 		return fmt.Sprintf(`'%s'`, time.Now().Format(g.DateTempl)), nil
 	case TagDateTime:
 		return fmt.Sprintf(`'%s'`, time.Now().Format(g.DateTimeTempl)), nil
 	case TagTimestamp:
 		return fmt.Sprintf(`'%s'`, time.Now().Format(g.DateTimeTempl)), nil
+	case TagYesNo:
+		return fmt.Sprintf(`'%s'`, randYesNo()), nil
+	case TagInteger:
+		return fmt.Sprint(rand.Int()), nil
+	case TagDecimal:
+		return fmt.Sprintf("%f", rand.Float64()*float64(rand.Int())), nil
 	case TagBool:
 		return fmt.Sprint(rand.Intn(1) != 0), nil
-	case TagYesNo:
-		return randYesNo(), nil
 	default:
 		return "", ErrNotInDict
 	}
@@ -132,6 +135,8 @@ func loadMap(m *map[string]string) {
 	(*m)["Timestamp"] = TagTimestamp
 	(*m)["Yes or No"] = TagYesNo
 	(*m)["Boolean"] = TagBool
+	(*m)["Decimal"] = TagDecimal
+	(*m)["Integer"] = TagInteger
 	(*m)["Phone"] = RegexPhone
 	(*m)["E-Mail"] = RegexEmail
 	(*m)["Postal Code"] = RegexPostalCode
@@ -139,7 +144,6 @@ func loadMap(m *map[string]string) {
 	(*m)["NIP"] = RegexNIP
 	(*m)["REGON"] = RegexREGON
 	(*m)["Word"] = RegexWord
-	(*m)["Number"] = RegexNumber
 }
 
 // Column describes each column after parsing the request.
@@ -162,7 +166,6 @@ func (g Generator) Query(table string, dsc map[string]Column) (string, error) {
 
 	for k, v := range dsc {
 		if !v.Include {
-			log.Printf("%s", k)
 			continue
 		}
 

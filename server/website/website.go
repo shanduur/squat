@@ -106,16 +106,16 @@ func BuildTables(src string, tab string, dsc []providers.Describe) (string, erro
 		}
 
 		if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeInt) {
-			opt = strings.ReplaceAll(opt, generator.RegexNumber+`"`, generator.RegexNumber+`"`+`selected="selected"`)
+			opt = strings.ReplaceAll(opt, generator.TagInteger+`"`, generator.TagInteger+`"`+`selected="selected"`)
 
 		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeChar) {
 			opt = strings.ReplaceAll(opt, generator.RegexWord+`"`, generator.RegexWord+`"`+`selected="selected"`)
 
 		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeFloat) {
-			opt = strings.ReplaceAll(opt, generator.RegexNumber+`"`, generator.RegexNumber+`"`+`selected="selected"`)
+			opt = strings.ReplaceAll(opt, generator.TagDecimal+`"`, generator.TagDecimal+`"`+`selected="selected"`)
 
 		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeDecimal) {
-			opt = strings.ReplaceAll(opt, generator.RegexNumber+`"`, generator.RegexNumber+`"`+`selected="selected"`)
+			opt = strings.ReplaceAll(opt, generator.TagDecimal+`"`, generator.TagDecimal+`"`+`selected="selected"`)
 
 		} else if strings.Contains(strings.ToUpper(d.ColumnType.String), generator.TypeTimestamp) {
 			opt = strings.ReplaceAll(opt, generator.TagTimestamp+`"`, generator.TagTimestamp+`"`+`selected="selected"`)
