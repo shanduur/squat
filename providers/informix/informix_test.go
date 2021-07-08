@@ -1,6 +1,7 @@
 package informix_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/shanduur/squat/providers/informix"
@@ -32,6 +33,10 @@ func TestProviderName(t *testing.T) {
 }
 
 func TestGetTableDescription(t *testing.T) {
+	if len(os.Getenv("TEST_NO_DB")) > 0 {
+		t.Skip()
+	}
+
 	ifx, err := informix.New("test/informix.toml")
 	if err != nil {
 		t.Errorf("unable to get provider: %s", err.Error())

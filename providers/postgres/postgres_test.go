@@ -1,6 +1,7 @@
 package postgres_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/shanduur/squat/providers/postgres"
@@ -32,6 +33,10 @@ func TestProviderName(t *testing.T) {
 }
 
 func TestGetTableDescription(t *testing.T) {
+	if len(os.Getenv("TEST_NO_DB")) > 0 {
+		t.Skip()
+	}
+
 	ifx, err := postgres.New("test/postgres.toml")
 	if err != nil {
 		t.Errorf("unable to get provider: %s", err.Error())

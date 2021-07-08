@@ -2,7 +2,7 @@ on:
   push:
     tags:
       - '*'
-name:
+name: Build Docker image
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,14 +30,14 @@ jobs:
             --tag shanduur/squat:${{ steps.previous-tag.outputs.tag }} \
             --platform linux/amd64,linux/arm64 \
             .
-  update-readme:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v2
-      - name: update description
-        uses: peter-evans/dockerhub-description@v2
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-          DOCKERHUB_REPOSITORY: peterevans/dockerhub-description
+  # update-readme:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkout code
+  #       uses: actions/checkout@v2
+  #     - name: update description
+  #       uses: peter-evans/dockerhub-description@v2
+  #       env:
+  #         DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  #         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #         DOCKERHUB_REPOSITORY: peterevans/dockerhub-description

@@ -19,5 +19,7 @@ jobs:
           unixodbc \
           unixodbc-dev
     - name: Test
+      env:
+        TEST_NO_DB: true
       run: |
         go test ./...
