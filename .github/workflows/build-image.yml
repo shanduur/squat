@@ -28,7 +28,7 @@ jobs:
             --tag shanduur/squat:latest \
             --tag shanduur/sqyat:${{ steps.previoustag.outputs.tag }} \
             --platform linux/amd64,linux/arm64 \
-            .
+            docker/Dockerfile
       - name: update description
         uses: peter-evans/dockerhub-description@v2
         env:
