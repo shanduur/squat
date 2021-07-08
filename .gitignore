@@ -19,3 +19,6 @@ build/
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# code coverage output
+coverage.txt
