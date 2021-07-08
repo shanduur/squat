@@ -1,3 +1,6 @@
+/*
+Package postgres includes implementation of Provider interface, as well as all necessary helper functions.
+*/
 package postgres
 
 import (
@@ -26,10 +29,13 @@ var describeQuery string
 
 var dbURL = "postgresql://%v:%v/%v?user=%v&password=%v"
 
+// PgProvider struct contains config and is the implementation of Providers
+// interface for PostgreSQL database.
 type PgProvider struct {
 	cfg pgConfig
 }
 
+// New reads provided config and creates new Postgres Provider.
 func New(configPath string) (PgProvider, error) {
 	var pg PgProvider
 
@@ -52,10 +58,13 @@ func (pg *PgProvider) Initialize(configPath string) (err error) {
 	return nil
 }
 
+// ProviderName is interface function.
 func (pg PgProvider) ProviderName() string {
 	return pg.cfg.ProviderName
 }
 
+// GetTableDescription retrieves basic table description from database.
+// Using describe.sql it retrieves info about every column of table.
 func (pg PgProvider) GetTableDescription(name string) (dsc []providers.Describe, err error) {
 	conn, err := connect(pg)
 	if err != nil {
@@ -84,10 +93,12 @@ func (pg PgProvider) GetTableDescription(name string) (dsc []providers.Describe,
 	return
 }
 
+// DateFormat is interface function.
 func (pg PgProvider) DateFormat() string {
 	return pg.cfg.Formats.DateFormat
 }
 
+// DateTimeFormat is interface function.
 func (pg PgProvider) DateTimeFormat() string {
 	return pg.cfg.Formats.DateTimeFormat
 }
