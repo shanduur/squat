@@ -1,7 +1,7 @@
 /*
 Package main is the main package of the Squat application.
 
-Squat is an aplication that provides simple SQL data generation functionality.
+Squat is an application that provides simple SQL data generation functionality.
 */
 package main
 

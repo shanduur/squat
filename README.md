@@ -1,21 +1,21 @@
 # Squat
 
 <p align="center">
-  <img src="other/squat.png"/>
+  <img src="https://github.com/Shanduur/squat/blob/main/other/squat.png?raw=true"/>
 </p>
 
 [![license](https://img.shields.io/github/license/shanduur/squat?)](LICENSE)
 ![go version](https://img.shields.io/github/go-mod/go-version/shanduur/squat?)
 [![Go Report Card](https://goreportcard.com/badge/github.com/shanduur/squat?)](https://goreportcard.com/report/github.com/shanduur/squat)
 
-Squat is an aplication that provides simple SQL data generation functionality. 
+Squat is an application that provides simple SQL data generation functionality. 
 
 It generates synthetic SQL data based on the table definition, that is gathered from the DBMS. 
 Squat supports IBM Informix and PostgreSQL, with planned support for all major databases, including MySQL, CockroachDB and MariaDB.
 
 # Requirements
 
-The Informix provider uses [alexbrainman/odbc](github.com/alexbrainman/odbc) package. This means, that for Linux and other \*NIX operating systems you have to install *unixODBC* application. Additionally, for the compilation, the developement version of it is neede. In Windows it calls directly to the *odbc.dll* - that also needs to be installed. Additionally, you have to provide your own Informix CSDK, that includes client driver for ODBC.
+The Informix provider uses [alexbrainman/odbc](github.com/alexbrainman/odbc) package. This means, that for Linux and other \*NIX operating systems you have to install *unixODBC* application. Additionally, for the compilation, the development version of that is needed (e.g. *unixodbc-dev* on Debian). In Windows it calls directly to the *odbc.dll* - that also needs to be installed. Additionally, you have to provide your own Informix CSDK, that includes client driver for ODBC.
 
 ## Docker
 
@@ -39,4 +39,4 @@ In Docker all env variables are set by default, and all exemplary files are load
 
 # Usage
 
-Usage of the applicaton is quite simple. If you are running it baremetal, just run the app, with the proper configuration files and environmental variables. Then head to [localhost:8080](localhost:8080) (or change the port correspondingly to the port you have passed with `--port` argument), and start using the web user interface.
+Usage of the application is quite simple. If you are running it bare-metal, just run the app, with the proper configuration files and environmental variables. Then head to [localhost:8080](localhost:8080) (or change the port correspondingly to the port you have passed with `--port` argument), and start using the web user interface.
