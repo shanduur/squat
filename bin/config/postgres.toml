@@ -1,5 +1,5 @@
 provider-name = "PostgreSQL"
-address = "127.0.0.1"
+address = "db"
 port = 5432
 user = "postgres"
 password = "example"
