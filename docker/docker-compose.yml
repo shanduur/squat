@@ -1,7 +1,7 @@
 version: '3.9'
 services:
     squat:
-        image: shanduur/squat:0.1
+        image: shanduur/squat:latest
         restart: on-failure
         ports: 
             - '8080:8080'
