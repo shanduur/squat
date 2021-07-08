@@ -8,7 +8,7 @@
 ![go version](https://img.shields.io/github/go-mod/go-version/shanduur/squat?)
 [![Go Report Card](https://goreportcard.com/badge/github.com/shanduur/squat?)](https://goreportcard.com/report/github.com/shanduur/squat)
 [![Test](https://github.com/Shanduur/squat/actions/workflows/test.yml/badge.svg?)](https://github.com/Shanduur/squat/actions/workflows/test.yml)
-[![Build Docker image](https://github.com/Shanduur/squat/actions/workflows/build-image.yml/badge.svg?)](https://github.com/Shanduur/squat/actions/workflows/build-image.yml)
+[![codecov](https://codecov.io/gh/Shanduur/squat/branch/main/graph/badge.svg?token=41HYQ2WILI)](https://codecov.io/gh/Shanduur/squat)
 
 Squat is an application that provides simple SQL data generation functionality. 
 
