@@ -70,7 +70,7 @@ func BuildTables(src string, tab string, dsc []providers.Describe) (string, erro
 	var options string
 	g, err := generator.New(path.Join(os.Getenv("DATA_LOCATION"), "data.gob"))
 	if err != nil {
-		return "", fmt.Errorf("unable to load generator")
+		return "", fmt.Errorf("unable to load generator: %s", err.Error())
 	}
 
 	for k, v := range g.TagsAndRegex {

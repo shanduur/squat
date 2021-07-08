@@ -27,6 +27,7 @@ jobs:
           cd docker && docker buildx build \
             --push \
             --tag shanduur/squat:latest \
+            --no-cache \
             --tag shanduur/squat:${{ steps.previous-tag.outputs.tag }} \
             --platform linux/amd64,linux/arm64 \
             .
