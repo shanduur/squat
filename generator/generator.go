@@ -216,6 +216,7 @@ func (g Generator) Query(table string, dsc map[string]Column) (string, error) {
 	return fmt.Sprintf(query, table, strings.Join(c, ", "), strings.Join(v, ", ")), nil
 }
 
+// SetSeed is used to set seed for random string generator
 func (g *Generator) SetSeed(seed int64) {
 	g.seed = seed
 }
