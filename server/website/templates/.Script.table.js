@@ -19,17 +19,19 @@ function addRow() {
   var name = newColName.value;
   var type = document.getElementById("newColType").value;
 
-  addNo(cols[0], name, rows+1);
-  addInclude(cols[1], name);
-  addName(cols[2], name);
-  addType(cols[3], name, type);
-  addLength(cols[4], name, 1);
-  addPrecision(cols[5], name, 0);
-  addUnique(cols[6], name);
-  addData(cols[7], name);
-  addCustom(cols[8], name);
-  addREGEX(cols[9], name);
-  addDelete(cols[10], rows+1);
+  var i = 0;
+  addNo(cols[i++], name, rows+1);
+  addInclude(cols[i++], name);
+  addName(cols[i++], name);
+  addType(cols[i++], name, type);
+  addLength(cols[i++], name, 1);
+  addPrecision(cols[i++], name, 0);
+  // addUnique(cols[i++], name);
+  addNullable(cols[i++], name);
+  addData(cols[i++], name);
+  addCustom(cols[i++], name);
+  addREGEX(cols[i++], name);
+  addDelete(cols[i++], rows+1);
 
   for (c in cols) {
     row.appendChild(cols[c]);
@@ -110,6 +112,16 @@ function addPrecision(td, name, precision) {
   input.setAttribute("type", "number");
   input.setAttribute("name", "precision-{{ .Name }}".replace("{{ .Name }}", name));
   input.setAttribute("value", String(precision));
+
+  td.appendChild(input);
+}
+
+{/* <td><input type="checkbox" name="nullable-{{ .Name }}" readonly="readonly"></td> */}
+function addCustom(td, name) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "checkbox");
+  input.setAttribute("name", "nullable-{{ .Name }}".replace("{{ .Name }}", name));
 
   td.appendChild(input);
 }

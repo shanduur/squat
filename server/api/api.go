@@ -74,9 +74,11 @@ func generate(w http.ResponseWriter, req *http.Request) {
 	}
 
 	gen.SetTemplates(p)
+	it := convertIterations(req.FormValue("rows"))
 
 	var out []string
-	for i := 0; i <= 100; i++ {
+	for i := 0; i < it; i++ {
+		gen.SetSeed(int64(i))
 		q, err := gen.Query(req.FormValue("source-table"), tab)
 		if err != nil {
 			website.PrintError(w, fmt.Errorf("unable to generate query: %s", err.Error()), http.StatusInternalServerError)
@@ -89,6 +91,19 @@ func generate(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte(strings.Join(out, "\n")))
 }
 
+func convertIterations(it string) int {
+	i, err := strconv.Atoi(it)
+	if err != nil {
+		return 1
+	}
+
+	if i < 1 {
+		return 1
+	}
+
+	return i
+}
+
 func parse(form url.Values) (map[string]generator.Column, error) {
 	table := make(map[string]generator.Column)
 
@@ -98,11 +113,15 @@ func parse(form url.Values) (map[string]generator.Column, error) {
 	lengths := make(map[string]int)
 	precisions := make(map[string]int)
 	includes := make(map[string]string)
+	nullables := make(map[string]string)
 	tagsregexes := make(map[string]string)
 
 	for k, v := range form {
 		if strings.Contains(k, "include-") {
 			includes[strings.ReplaceAll(k, "include-", "")] = v[0]
+
+		} else if strings.Contains(k, "nullable-") {
+			nullables[strings.ReplaceAll(k, "nullable-", "")] = v[0]
 
 		} else if strings.Contains(k, "name-") {
 			names[strings.ReplaceAll(k, "name-", "")] = v[0]
@@ -163,6 +182,12 @@ func parse(form url.Values) (map[string]generator.Column, error) {
 			col.Include = true
 		} else {
 			col.Include = false
+		}
+
+		if nullables[k] == "on" {
+			col.Nullable = true
+		} else {
+			col.Nullable = false
 		}
 
 		table[k] = col

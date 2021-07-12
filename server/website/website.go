@@ -132,6 +132,12 @@ func BuildTables(src string, tab string, dsc []providers.Describe) (string, erro
 			row = strings.ReplaceAll(row, template["name"], d.ColumnName.String)
 		}
 
+		if d.Nullable.Valid {
+			if d.Nullable.Bool {
+				row = strings.ReplaceAll(row, `name="nullable`, `checked=true name="nullable`)
+			}
+		}
+
 		row = strings.ReplaceAll(row, template["options"], opt)
 
 		rows = fmt.Sprintf("%s\n%s", rows, row)

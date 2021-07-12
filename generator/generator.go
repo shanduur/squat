@@ -24,6 +24,7 @@ type Generator struct {
 	TagsAndRegex  map[string]string
 	DateTempl     string
 	DateTimeTempl string
+	seed          int64
 }
 
 // Dictionary is a structure holding data read from the Dictionary gob file.
@@ -105,10 +106,13 @@ func randYesNo() string {
 
 // Generate generates the data based on provided REGEX, length limit, and type.
 func (g Generator) Generate(regex string, limit int, t string) (string, error) {
-	out, err := reggen.Generate(regex, limit)
+	gen, err := reggen.NewGenerator(regex)
 	if err != nil {
-		return out, fmt.Errorf("unable to generate from %s with limit %d: %s", regex, limit, err.Error())
+		return "", fmt.Errorf("unable to generate from %s with limit %d: %s", regex, limit, err.Error())
 	}
+	gen.SetSeed(g.seed)
+
+	out := gen.Generate(limit)
 
 	switch t {
 	case TypeChar:
@@ -154,6 +158,7 @@ type Column struct {
 	Type      string
 	Length    int
 	Precision int
+	Nullable  bool
 	TagRegex  string
 }
 
@@ -175,6 +180,12 @@ func (g Generator) Query(table string, dsc map[string]Column) (string, error) {
 			s, err := g.Get(v.TagRegex)
 			if err != nil {
 				return "", fmt.Errorf("unable to obtain value %s: %s", v.TagRegex, err.Error())
+			}
+
+			if v.Nullable {
+				if r := rand.Int31n(5); r == 1 {
+					s = "null"
+				}
 			}
 
 			values[v.Order] = s
@@ -203,4 +214,8 @@ func (g Generator) Query(table string, dsc map[string]Column) (string, error) {
 	}
 
 	return fmt.Sprintf(query, table, strings.Join(c, ", "), strings.Join(v, ", ")), nil
+}
+
+func (g *Generator) SetSeed(seed int64) {
+	g.seed = seed
 }

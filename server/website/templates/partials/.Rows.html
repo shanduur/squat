@@ -5,7 +5,7 @@
   <td><input type="text" name="type-{{ .Name }}" value="{{ .Type }}" readonly="readonly"></td>
   <td><input type="number" name="length-{{ .Name }}" value="{{ .Length }}" readonly="readonly"></td>
   <td><input type="number" name="precision-{{ .Name }}" value="{{ .Precision }}" readonly="readonly"></td>
-  <td><input type="checkbox" name="unique-{{ .Name }}"></td>
+  <td><input type="checkbox" name="nullable-{{ .Name }}" readonly="readonly"></td>
   <td>
     <select name="regex-{{ .Name }}">
       {{ .Options }}

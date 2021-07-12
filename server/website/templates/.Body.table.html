@@ -13,7 +13,7 @@
         <td><b>Type</b></td>
         <td><b>Length</b></td>
         <td><b>Precision</b></td>
-        <td><b>Unique</b></td>
+        <td><b>Nullable</b></td>
         <td><b>Data</b></td>
         <td><b>Custom</b></td>
         <td><b>REGEX</b></td>
@@ -22,12 +22,13 @@
     <tbody id="table-body">
       {{ .Rows }}
     </tbody>
-  </table>
+  </table><br />
   <input type="text" id="newColName" value="NEW_COLUMN">
   <input type="text" id="newColType" value="INTEGER">
   <button onclick="addRow()" type="button">
     Add Row
-  </button><br />
+  </button><br /><br />
+  Generate <input type="number" name="rows" value="15" style="width:48px;"> rows.
   <button type="submit" formaction="/api/v1/generate" target="_blank">
     Generate
   </button><br />
