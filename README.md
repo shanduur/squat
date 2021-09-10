@@ -17,7 +17,7 @@ Squat supports IBM Informix and PostgreSQL, with planned support for all major d
 
 # Requirements
 
-The Informix provider uses [alexbrainman/odbc](github.com/alexbrainman/odbc) package. This means, that for Linux and other \*NIX operating systems you have to install *unixODBC* application. Additionally, for the compilation, the development version of that is needed (e.g. *unixodbc-dev* on Debian). In Windows it calls directly to the *odbc.dll* - that also needs to be installed. Additionally, you have to provide your own Informix CSDK, that includes client driver for ODBC.
+The Informix provider uses [alexbrainman/odbc](https://github.com/alexbrainman/odbc) package. This means, that for Linux and other \*NIX operating systems you have to install *unixODBC* application. Additionally, for the compilation, the development version of that is needed (e.g. *unixodbc-dev* on Debian). In Windows it calls directly to the *odbc.dll* - that also needs to be installed. Additionally, you have to provide your own Informix CSDK, that includes client driver for ODBC.
 
 ## Docker
 
