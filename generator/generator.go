@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -113,6 +114,9 @@ func (g Generator) Generate(regex string, limit int, t string) (string, error) {
 	gen.SetSeed(g.seed)
 
 	out := gen.Generate(limit)
+	if len(out) > limit {
+		out = out[0:limit]
+	}
 
 	switch t {
 	case TypeChar:
@@ -169,6 +173,8 @@ func (g Generator) Query(table string, dsc map[string]Column) (string, error) {
 	columns := make(map[int]string)
 	values := make(map[int]string)
 
+	isTag := regexp.MustCompile("^@.*$")
+
 	for k, v := range dsc {
 		if !v.Include {
 			continue
@@ -176,7 +182,7 @@ func (g Generator) Query(table string, dsc map[string]Column) (string, error) {
 
 		columns[v.Order] = k
 
-		if strings.Contains(v.TagRegex, "@") {
+		if isTag.MatchString(v.TagRegex) {
 			s, err := g.Get(v.TagRegex)
 			if err != nil {
 				return "", fmt.Errorf("unable to obtain value %s: %s", v.TagRegex, err.Error())
