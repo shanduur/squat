@@ -13,12 +13,16 @@ import (
 // ErrNotInDict indicates that value, which was requested, is not in the dictionary.
 var ErrNotInDict = errors.New("tag not found in dictionary")
 
+// ErrUseColName indicates that name of the column should be inserted as the content
+var ErrUseColName = errors.New("use column name as string")
+
 // Constant defining default values supported for the generation of the data.
 const (
 	TagName      = "@name"
 	TagSurname   = "@surname"
 	TagInteger   = "@integer"
 	TagDecimal   = "@decimal"
+	TagStreet    = "@street"
 	TagCity      = "@city"
 	TagState     = "@state"
 	TagCountry   = "@country"
@@ -27,13 +31,15 @@ const (
 	TagTimestamp = "@timestamp"
 	TagYesNo     = "@yn"
 	TagBool      = "@bool"
+	TagColName   = "@colname"
 
 	RegexPhone      = `^(\d{9}|\+\d{11})$`
 	RegexEmail      = `^[a-z]{5,10}@[a-z]{5,10}\.(com|net|org)$`
 	RegexPostalCode = `^(\d{2})-(\d{3})$`
-	RegexPESEL      = `^(\d{11})`
-	RegexNIP        = `^(\d{10})`
-	RegexREGON      = `^(\d{9})`
+	RegexPESEL      = `^(\d{11})$`
+	RegexNIP        = `^(\d{10})$`
+	RegexREGON      = `^(\d{9})$`
+	RegexIBAN       = `^([a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16})$`
 	RegexWord       = `^([A-Z][a-z]+)(-[A-Z][a-z]+)?$`
 )
 

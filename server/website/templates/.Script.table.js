@@ -121,7 +121,7 @@ function addCustom(td, name) {
   var input = document.createElement("input");
 
   input.setAttribute("type", "checkbox");
-  input.setAttribute("name", "nullable-{{ .Name }}".replace("{{ .Name }}", name));
+  input.setAttribute("name", "custom-{{ .Name }}".replace("{{ .Name }}", name));
 
   td.appendChild(input);
 }
@@ -132,6 +132,16 @@ function addUnique(td, name) {
 
   input.setAttribute("type", "checkbox");
   input.setAttribute("name", "unique-{{ .Name }}".replace("{{ .Name }}", name))
+
+  td.appendChild(input);
+}
+
+{/* <td><input type="checkbox" name="nullable-{{ .Name }}"></td> */}
+function addNullable(td, name) {
+  var input = document.createElement("input");
+
+  input.setAttribute("type", "checkbox");
+  input.setAttribute("name", "nullable-{{ .Name }}".replace("{{ .Name }}", name))
 
   td.appendChild(input);
 }

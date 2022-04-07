@@ -7,6 +7,7 @@ package generator
 
 import (
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"math/rand"
 	"os"
@@ -32,6 +33,7 @@ type Generator struct {
 type Dictionary struct {
 	Names     []string `json:"names"`
 	Surnames  []string `json:"surnames"`
+	Streets   []string `json:"streets"`
 	Cities    []string `json:"cities"`
 	States    []string `json:"states"`
 	Countries []string `json:"countries"`
@@ -72,6 +74,8 @@ func (g Generator) Get(tag string) (string, error) {
 		return fmt.Sprintf(`'%s'`, strings.ReplaceAll(g.dictionary.Names[rand.Intn(len(g.dictionary.Names))], "'", "`")), nil
 	case TagSurname:
 		return fmt.Sprintf(`'%s'`, strings.ReplaceAll(g.dictionary.Surnames[rand.Intn(len(g.dictionary.Surnames))], "'", "`")), nil
+	case TagStreet:
+		return fmt.Sprintf(`'%s'`, strings.ReplaceAll(g.dictionary.Streets[rand.Intn(len(g.dictionary.Streets))], "'", "`")), nil
 	case TagCity:
 		return fmt.Sprintf(`'%s'`, strings.ReplaceAll(g.dictionary.Cities[rand.Intn(len(g.dictionary.Cities))], "'", "`")), nil
 	case TagState:
@@ -92,6 +96,8 @@ func (g Generator) Get(tag string) (string, error) {
 		return fmt.Sprintf("%f", rand.Float64()*float64(rand.Int())), nil
 	case TagBool:
 		return fmt.Sprint(rand.Intn(1) != 0), nil
+	case TagColName:
+		return "", ErrUseColName
 	default:
 		return "", ErrNotInDict
 	}
@@ -135,6 +141,7 @@ func (g Generator) Generate(regex string, limit int, t string) (string, error) {
 func loadMap(m *map[string]string) {
 	(*m)["Name"] = TagName
 	(*m)["Surname"] = TagSurname
+	(*m)["Street"] = TagStreet
 	(*m)["City"] = TagCity
 	(*m)["State"] = TagState
 	(*m)["Country"] = TagCountry
@@ -145,8 +152,10 @@ func loadMap(m *map[string]string) {
 	(*m)["Boolean"] = TagBool
 	(*m)["Decimal"] = TagDecimal
 	(*m)["Integer"] = TagInteger
+	(*m)["Same as Column Name"] = TagColName
 	(*m)["Phone"] = RegexPhone
 	(*m)["E-Mail"] = RegexEmail
+	(*m)["IBAN"] = RegexIBAN
 	(*m)["Postal Code"] = RegexPostalCode
 	(*m)["PESEL"] = RegexPESEL
 	(*m)["NIP"] = RegexNIP
@@ -156,14 +165,16 @@ func loadMap(m *map[string]string) {
 
 // Column describes each column after parsing the request.
 type Column struct {
-	Order     int
-	Include   bool
-	Name      string
-	Type      string
-	Length    int
-	Precision int
-	Nullable  bool
-	TagRegex  string
+	Order          int
+	Include        bool
+	Name           string
+	Type           string
+	Length         int
+	Precision      int
+	Nullable       bool
+	TagRegex       string
+	UseCustomRegex bool
+	CustomRegex    string
 }
 
 // Query builds insert query based on the table description.
@@ -184,7 +195,14 @@ func (g Generator) Query(table string, dsc map[string]Column) (string, error) {
 
 		if isTag.MatchString(v.TagRegex) {
 			s, err := g.Get(v.TagRegex)
-			if err != nil {
+			if err != nil && errors.Is(ErrUseColName, err) {
+				s = v.Name
+				if len(s) > v.Length {
+					s = s[0:v.Length]
+				}
+				s = fmt.Sprintf(`'%s'`, s)
+
+			} else if err != nil {
 				return "", fmt.Errorf("unable to obtain value %s: %s", v.TagRegex, err.Error())
 			}
 
@@ -198,7 +216,14 @@ func (g Generator) Query(table string, dsc map[string]Column) (string, error) {
 			continue
 		}
 
-		s, err := g.Generate(v.TagRegex, v.Length, v.Type)
+		var tagRegex string
+		if v.UseCustomRegex {
+			tagRegex = v.CustomRegex
+		} else {
+			tagRegex = v.TagRegex
+		}
+
+		s, err := g.Generate(tagRegex, v.Length, v.Type)
 		if err != nil {
 			return "", fmt.Errorf("unable to generate from %s and length %d: %s", v.TagRegex, v.Length, err.Error())
 		}

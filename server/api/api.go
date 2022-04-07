@@ -115,6 +115,8 @@ func parse(form url.Values) (map[string]generator.Column, error) {
 	includes := make(map[string]string)
 	nullables := make(map[string]string)
 	tagsregexes := make(map[string]string)
+	usecustomregexes := make(map[string]string)
+	customregexes := make(map[string]string)
 
 	for k, v := range form {
 		if strings.Contains(k, "include-") {
@@ -122,6 +124,12 @@ func parse(form url.Values) (map[string]generator.Column, error) {
 
 		} else if strings.Contains(k, "nullable-") {
 			nullables[strings.ReplaceAll(k, "nullable-", "")] = v[0]
+
+		} else if strings.Contains(k, "custom-regex-") {
+			customregexes[strings.ReplaceAll(k, "custom-regex-", "")] = v[0]
+
+		} else if strings.Contains(k, "custom-") {
+			usecustomregexes[strings.ReplaceAll(k, "custom-", "")] = v[0]
 
 		} else if strings.Contains(k, "name-") {
 			names[strings.ReplaceAll(k, "name-", "")] = v[0]
@@ -177,6 +185,7 @@ func parse(form url.Values) (map[string]generator.Column, error) {
 		col.Length = lengths[k]
 		col.Precision = precisions[k]
 		col.TagRegex = tagsregexes[k]
+		col.CustomRegex = customregexes[k]
 
 		if includes[k] == "on" {
 			col.Include = true
@@ -188,6 +197,12 @@ func parse(form url.Values) (map[string]generator.Column, error) {
 			col.Nullable = true
 		} else {
 			col.Nullable = false
+		}
+
+		if usecustomregexes[k] == "on" {
+			col.UseCustomRegex = true
+		} else {
+			col.UseCustomRegex = false
 		}
 
 		table[k] = col
