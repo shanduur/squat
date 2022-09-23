@@ -1,3 +1,5 @@
+//go:build informix
+
 /*
 Package informix includes implementation of the Provider interface.
 */

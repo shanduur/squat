@@ -5,7 +5,6 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -16,33 +15,13 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/shanduur/squat/generator"
 	"github.com/shanduur/squat/providers"
-	"github.com/shanduur/squat/providers/informix"
-	"github.com/shanduur/squat/providers/postgres"
 	"github.com/shanduur/squat/server/website"
 )
-
-func init() {
-	Providers = make(map[string]providers.Provider)
-
-	if p, err := informix.New(path.Join(os.Getenv("CONFIG_LOCATION"), "informix.toml")); err != nil {
-		log.Printf("unable to create new provider connection: %s", err.Error())
-		log.Printf("check if env variables CONFIG_LOCATION and DATA_LOCATION are set")
-	} else {
-		Providers[p.ProviderName()] = p
-	}
-
-	if p, err := postgres.New(path.Join(os.Getenv("CONFIG_LOCATION"), "postgres.toml")); err != nil {
-		log.Printf("unable to create new provider connection: %s", err.Error())
-		log.Printf("check if env variables CONFIG_LOCATION and DATA_LOCATION are set")
-	} else {
-		Providers[p.ProviderName()] = p
-	}
-}
 
 // Providers map holds all the providers that are currently supported and
 // are available to use. If config file was not found, then the provider
 // won't be inserted into this map.
-var Providers map[string]providers.Provider
+var Providers = make(map[string]providers.Provider)
 
 // RegisterEndpoints registers all handlers for the application.
 func RegisterEndpoints(mux *mux.Router) {

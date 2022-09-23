@@ -1,6 +1,12 @@
+TAGS=$(shell ./scripts/load.sh free)
+
 .PHONY: build
 build:
-	go build -o ./build/
+	go build ${TAGS} -o ./build/
+
+.PHONY: nonfree
+nonfree: TAGS+=$(shell ./scripts/load.sh nonfree)
+nonfree: build
 
 .PHONY: test
 test:

@@ -1,3 +1,5 @@
+//go:build postgres
+
 /*
 Package postgres includes implementation of Provider interface, as well as all necessary helper functions.
 */

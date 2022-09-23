@@ -1,0 +1,8 @@
+{
+  "nonfree": [
+    "informix"
+  ],
+  "free": [
+    "postgres"
+  ]
+}

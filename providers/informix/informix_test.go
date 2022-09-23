@@ -1,3 +1,5 @@
+//go:build informix
+
 package informix_test
 
 import (
